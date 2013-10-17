@@ -59,12 +59,13 @@ public class Fabric3TypeListener implements TypeListener {
     public <T> void hear(TypeLiteral<T> literal, TypeEncounter<T> encounter) {
 
         for (Field field : literal.getRawType().getDeclaredFields()) {
-            // inject reference annotations
             if (field.isAnnotationPresent(Reference.class)) {
+                // inject reference annotations
                 Object proxy = domain.getService(field.getType());
                 Fabric3FieldInjector<T> injector = new Fabric3FieldInjector<T>(field, proxy);
                 encounter.register(injector);
             } else if (field.isAnnotationPresent(Producer.class)) {
+                // inject producer annotations
                 Producer producer = field.getAnnotation(Producer.class);
                 String channelName = producer.value().length() > 1 ? producer.value() : field.getName();
                 Object proxy = domain.getChannel(field.getType(), channelName);
