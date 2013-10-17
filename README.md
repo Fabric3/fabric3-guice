@@ -1,5 +1,5 @@
-Fabric3 Guice Integration Runtime
-=================================
+Fabric3 Guice Integration
+=========================
 
 This repository hosts code for integrating Fabric3 with the Guice dependency injection framework. Further information on can be found at http://www.fabric3
 .org.
