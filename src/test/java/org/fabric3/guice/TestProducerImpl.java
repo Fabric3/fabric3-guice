@@ -59,7 +59,7 @@ public class TestProducerImpl implements TestProducer {
     }
 
     public void publishMethod() {
-        fieldChannel.send("test");
+        methodChannel.send("test");
     }
 
 }
