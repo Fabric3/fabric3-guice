@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- See the NOTICE file distributed with this work for information regarding 
+	copyright ownership. This file is licensed to you under the Apache License, 
+	Version 2.0 (the "License"); you may not use this file except in compliance 
+	with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.codehaus.fabric3</groupId>
+        <artifactId>parent</artifactId>
+        <version>10</version>
+    </parent>
+    <artifactId>fabric3-guice</artifactId>
+    <version>2.5.0-SNAPSHOT</version>
+    <name>Fabric3 Guice POM</name>
+    <description>Fabric3 Guice Integration POM.</description>
+    <packaging>jar</packaging>
+
+    <properties>
+        <fabric3.version>2.5.0-SNAPSHOT</fabric3.version>
+        <sca.api.version>1.1.3</sca.api.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>3.1</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <profiles>
+        <profile>
+            <id>bamboo</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <uniqueVersion>true</uniqueVersion>
+                    <id>fabric3-codehaus-ci</id>
+                    <name>Snapshot repository available from Codehaus' Bamboo server</name>
+                    <url>file:///opt/ci.repository.codehaus.org/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>sources</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>codehaus-release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9</version>
+                        <configuration>
+                            <detectOfflineLinks>false</detectOfflineLinks>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-http</artifactId>
+                        <version>2.4</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-node-api</artifactId>
+            <version>${fabric3.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-node-distribution</artifactId>
+            <version>${fabric3.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+    </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>codehaus.org</id>
+            <name>Codehaus Central Repository</name>
+            <url>dav:https://dav.codehaus.org/repository/fabric3/</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>codehaus.org</id>
+            <name>Codehaus Central Development Repository</name>
+            <url>dav:https://dav.codehaus.org/snapshots.repository/fabric3/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:Fabric3/fabric3-guice.git</connection>
+        <developerConnection>scm:git:git@github.com:Fabric3/fabric3-guice.git</developerConnection>
+        <url>http://github.com/Fabric3/fabric3-guice</url>
+        <tag>HEAD</tag>
+    </scm>
+
+</project>
