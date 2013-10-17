@@ -1,0 +1,14 @@
+*.iml
+*.iws
+*.ipr
+target/
+out/
+.clover/
+idea
+.idea/
+.DS_Store
+.classpath
+.project
+.settings/
+dependency-reduced-pom.xml
+
