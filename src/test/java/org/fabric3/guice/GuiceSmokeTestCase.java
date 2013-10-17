@@ -46,7 +46,7 @@ import org.fabric3.api.node.Fabric;
 /**
  *
  */
-public class GuiceSmokeTest extends TestCase {
+public class GuiceSmokeTestCase extends TestCase {
 
     private Fabric fabric;
 
