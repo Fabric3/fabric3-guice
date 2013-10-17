@@ -44,19 +44,16 @@ import org.fabric3.api.node.Domain;
 /**
  *
  */
-public class TestModule extends AbstractModule {
+public class TestEventModule extends AbstractModule {
     private Domain domain;
 
-    public TestModule(Domain domain) {
+    public TestEventModule(Domain domain) {
         this.domain = domain;
     }
 
     protected void configure() {
-
         Fabric3TypeListener listener = new Fabric3TypeListener(domain);
-
         bindListener(Matchers.any(), listener);
-
-        bind(TestClient.class).to(TestClientImpl.class);
+        bind(TestProducer.class).to(TestProducerImpl.class);
     }
 }

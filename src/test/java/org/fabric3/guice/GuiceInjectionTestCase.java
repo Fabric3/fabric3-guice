@@ -37,11 +37,48 @@
 */
 package org.fabric3.guice;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import junit.framework.TestCase;
+import org.fabric3.api.model.type.builder.ChannelDefinitionBuilder;
+import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.node.Bootstrap;
+import org.fabric3.api.node.Fabric;
+
 /**
  *
  */
-public interface TestClient {
+public class GuiceInjectionTestCase extends TestCase {
 
-    String invoke(String message);
+    private Fabric fabric;
 
+    public void testReferenceInjection() throws Exception {
+        fabric.getDomain().deploy("TestService", new TestServiceImpl());
+
+        TestServiceModule testModule = new TestServiceModule(fabric.getDomain());
+        Injector injector = Guice.createInjector(testModule);
+
+        TestServiceClient client = injector.getInstance(TestServiceClient.class);
+        assertEquals("test", client.invoke("test"));
+    }
+
+    public void testProducerInjection() throws Exception {
+        ChannelDefinition definition = ChannelDefinitionBuilder.newBuilder("TestChannel").build();
+        fabric.getDomain().deploy(definition);
+
+        TestEventModule testModule = new TestEventModule(fabric.getDomain());
+        Injector injector = Guice.createInjector(testModule);
+
+        TestProducer producer = injector.getInstance(TestProducer.class);
+        producer.publish();
+    }
+
+    public void setUp() throws Exception {
+        fabric = Bootstrap.initialize();
+        fabric.start();
+    }
+
+    public void tearDown() throws Exception {
+        fabric.stop();
+    }
 }

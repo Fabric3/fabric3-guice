@@ -37,36 +37,11 @@
 */
 package org.fabric3.guice;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import junit.framework.TestCase;
-import org.fabric3.api.node.Bootstrap;
-import org.fabric3.api.node.Fabric;
-
 /**
  *
  */
-public class GuiceSmokeTestCase extends TestCase {
+public interface TestServiceClient {
 
-    private Fabric fabric;
+    String invoke(String message);
 
-    public void testReferenceInjection() throws Exception {
-        TestModule testModule = new TestModule(fabric.getDomain());
-        Injector injector = Guice.createInjector(testModule);
-
-        TestClient client = injector.getInstance(TestClient.class);
-        assertEquals("test", client.invoke("test"));
-    }
-
-    public void setUp() throws Exception {
-        fabric = Bootstrap.initialize();
-        fabric.start();
-        fabric.getDomain().deploy("TestService", new TestServiceImpl());
-
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        fabric.stop();
-    }
 }

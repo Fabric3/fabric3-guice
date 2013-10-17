@@ -37,17 +37,11 @@
 */
 package org.fabric3.guice;
 
-import org.oasisopen.sca.annotation.Reference;
-
 /**
  *
  */
-public class TestClientImpl implements TestClient {
+public interface TestProducer {
 
-    @Reference
-    TestService service;
+    void publish();
 
-    public String invoke(String message) {
-        return service.message(message);
-    }
 }

@@ -37,42 +37,17 @@
 */
 package org.fabric3.guice;
 
-import java.lang.reflect.Field;
-
-import com.google.inject.TypeLiteral;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
-import org.fabric3.api.annotation.Producer;
-import org.fabric3.api.node.Domain;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Handles injection and endpoint publication for Guice injection types.
+ *
  */
-public class Fabric3TypeListener implements TypeListener {
-    private Domain domain;
+public class TestServiceClientImpl implements TestServiceClient {
 
-    public Fabric3TypeListener(Domain domain) {
-        this.domain = domain;
+    @Reference
+    TestService service;
+
+    public String invoke(String message) {
+        return service.message(message);
     }
-
-    public <T> void hear(TypeLiteral<T> literal, TypeEncounter<T> encounter) {
-
-        for (Field field : literal.getRawType().getDeclaredFields()) {
-            // inject reference annotations
-            if (field.isAnnotationPresent(Reference.class)) {
-                Object proxy = domain.getService(field.getType());
-                Fabric3FieldInjector<T> injector = new Fabric3FieldInjector<T>(field, proxy);
-                encounter.register(injector);
-            } else if (field.isAnnotationPresent(Producer.class)) {
-                Producer producer = field.getAnnotation(Producer.class);
-                String channelName = producer.value().length() > 1 ? producer.value() : field.getName();
-                Object proxy = domain.getChannel(field.getType(), channelName);
-                Fabric3FieldInjector<T> injector = new Fabric3FieldInjector<T>(field, proxy);
-                encounter.register(injector);
-            }
-        }
-
-    }
-
 }
