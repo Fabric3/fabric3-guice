@@ -45,9 +45,21 @@ import org.oasisopen.sca.annotation.Reference;
 public class TestServiceClientImpl implements TestServiceClient {
 
     @Reference
-    TestService service;
+    protected TestService fieldService;
 
-    public String invoke(String message) {
-        return service.message(message);
+    private TestService methodService;
+
+    @Reference
+    public void setMethodService(TestService methodService) {
+        this.methodService = methodService;
     }
+
+    public String invokeField(String message) {
+        return fieldService.message(message);
+    }
+
+    public String invokeMethod(String message) {
+        return methodService.message(message);
+    }
+
 }

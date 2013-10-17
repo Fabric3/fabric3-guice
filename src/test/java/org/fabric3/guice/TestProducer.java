@@ -42,6 +42,8 @@ package org.fabric3.guice;
  */
 public interface TestProducer {
 
-    void publish();
+    void publishField();
+
+    void publishMethod();
 
 }

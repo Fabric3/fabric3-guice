@@ -37,13 +37,30 @@
 */
 package org.fabric3.guice;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import com.google.inject.MembersInjector;
+
 /**
- *
+ * Injects a proxy on a method.
  */
-public interface TestServiceClient {
+public class Fabric3MethodInjector<T> implements MembersInjector<T> {
+    private Method method;
+    private Object proxy;
 
-    String invokeField(String message);
+    public Fabric3MethodInjector(Method method, Object proxy) {
+        this.method = method;
+        this.proxy = proxy;
+    }
 
-    String invokeMethod(String message);
-
+    public void injectMembers(Object instance) {
+        try {
+            method.invoke(instance, proxy);
+        } catch (IllegalAccessException e) {
+            throw new InjectionException(e);
+        } catch (InvocationTargetException e) {
+            throw new InjectionException(e);
+        }
+    }
 }

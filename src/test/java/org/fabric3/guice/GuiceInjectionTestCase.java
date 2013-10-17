@@ -59,7 +59,8 @@ public class GuiceInjectionTestCase extends TestCase {
         Injector injector = Guice.createInjector(testModule);
 
         TestServiceClient client = injector.getInstance(TestServiceClient.class);
-        assertEquals("test", client.invoke("test"));
+        assertEquals("test", client.invokeField("test"));
+        assertEquals("test", client.invokeMethod("test"));
     }
 
     public void testProducerInjection() throws Exception {
@@ -70,7 +71,8 @@ public class GuiceInjectionTestCase extends TestCase {
         Injector injector = Guice.createInjector(testModule);
 
         TestProducer producer = injector.getInstance(TestProducer.class);
-        producer.publish();
+        producer.publishField();
+        producer.publishMethod();
     }
 
     public void setUp() throws Exception {

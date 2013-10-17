@@ -45,9 +45,21 @@ import org.fabric3.api.annotation.Producer;
 public class TestProducerImpl implements TestProducer {
 
     @Producer("TestChannel")
-    protected TestChannel channel;
+    protected TestChannel fieldChannel;
 
-    public void publish() {
-        channel.send("Test");
+    private TestChannel methodChannel;
+
+    @Producer("TestChannel")
+    public void setMethodChannel(TestChannel methodChannel) {
+        this.methodChannel = methodChannel;
     }
+
+    public void publishField() {
+        fieldChannel.send("test");
+    }
+
+    public void publishMethod() {
+        fieldChannel.send("test");
+    }
+
 }

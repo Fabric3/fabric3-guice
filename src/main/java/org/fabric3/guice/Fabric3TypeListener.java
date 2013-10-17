@@ -38,6 +38,7 @@
 package org.fabric3.guice;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;
@@ -72,6 +73,31 @@ public class Fabric3TypeListener implements TypeListener {
                 Fabric3FieldInjector<T> injector = new Fabric3FieldInjector<T>(field, proxy);
                 encounter.register(injector);
             }
+        }
+
+        for (Method method : literal.getRawType().getMethods()) {
+            if (method.isAnnotationPresent(Reference.class)) {
+                validateInjectionMethod(method);
+                // inject reference annotations
+                Object proxy = domain.getService(method.getParameterTypes()[0]);
+                Fabric3MethodInjector<T> injector = new Fabric3MethodInjector<T>(method, proxy);
+                encounter.register(injector);
+            } else if (method.isAnnotationPresent(Producer.class)) {
+                validateInjectionMethod(method);
+                // inject producer annotations
+                Producer producer = method.getAnnotation(Producer.class);
+                String channelName = producer.value().length() > 1 ? producer.value() : method.getName();
+                Object proxy = domain.getChannel(method.getParameterTypes()[0], channelName);
+                Fabric3MethodInjector<T> injector = new Fabric3MethodInjector<T>(method, proxy);
+                encounter.register(injector);
+            }
+        }
+
+    }
+
+    private void validateInjectionMethod(Method method) {
+        if (method.getParameterTypes().length != 1) {
+            throw new InjectionException("Injection method must contain one parameter: " + method);
         }
 
     }

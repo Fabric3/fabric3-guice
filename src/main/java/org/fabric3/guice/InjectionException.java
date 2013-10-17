@@ -46,4 +46,8 @@ public class InjectionException extends RuntimeException {
     public InjectionException(Throwable cause) {
         super(cause);
     }
+
+    public InjectionException(String message) {
+        super(message);
+    }
 }
