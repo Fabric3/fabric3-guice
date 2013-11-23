@@ -40,6 +40,7 @@ package org.fabric3.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 import org.fabric3.api.node.Domain;
+import org.fabric3.guice.injection.Fabric3TypeListener;
 
 /**
  *

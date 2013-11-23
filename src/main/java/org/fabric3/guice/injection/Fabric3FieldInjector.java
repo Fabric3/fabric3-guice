@@ -35,26 +35,30 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.guice;
+package org.fabric3.guice.injection;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.matcher.Matchers;
-import org.fabric3.api.node.Domain;
-import org.fabric3.guice.injection.Fabric3TypeListener;
+import java.lang.reflect.Field;
+
+import com.google.inject.MembersInjector;
 
 /**
- *
+ * Injects a proxy on a field.
  */
-public class TestEventModule extends AbstractModule {
-    private Domain domain;
+public class Fabric3FieldInjector<T> implements MembersInjector<T> {
+    private Field field;
+    private Object proxy;
 
-    public TestEventModule(Domain domain) {
-        this.domain = domain;
+    public Fabric3FieldInjector(Field field, Object proxy) {
+        this.field = field;
+        this.field.setAccessible(true);
+        this.proxy = proxy;
     }
 
-    protected void configure() {
-        Fabric3TypeListener listener = new Fabric3TypeListener(domain);
-        bindListener(Matchers.any(), listener);
-        bind(TestProducer.class).to(TestProducerImpl.class);
+    public void injectMembers(Object instance) {
+        try {
+            field.set(instance, proxy);
+        } catch (IllegalAccessException e) {
+            throw new InjectionException(e);
+        }
     }
 }

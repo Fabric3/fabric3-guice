@@ -1,0 +1,6 @@
+<config xmlns="urn:fabric3.org">
+    <runtime port.range="1191-1290" mode="node" monitor.level="DEBUG"/>
+    <federation>
+        <zoneName>zone2</zoneName>
+    </federation>
+</config>

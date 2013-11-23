@@ -35,28 +35,32 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.guice;
+package org.fabric3.guice.injection;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import com.google.inject.MembersInjector;
 
 /**
- * Injects a proxy on a field.
+ * Injects a proxy on a method.
  */
-public class Fabric3FieldInjector<T> implements MembersInjector<T> {
-    private Field field;
+public class Fabric3MethodInjector<T> implements MembersInjector<T> {
+    private Method method;
     private Object proxy;
 
-    public Fabric3FieldInjector(Field field, Object proxy) {
-        this.field = field;
+    public Fabric3MethodInjector(Method method, Object proxy) {
+        this.method = method;
+        this.method.setAccessible(true);
         this.proxy = proxy;
     }
 
     public void injectMembers(Object instance) {
         try {
-            field.set(instance, proxy);
+            method.invoke(instance, proxy);
         } catch (IllegalAccessException e) {
+            throw new InjectionException(e);
+        } catch (InvocationTargetException e) {
             throw new InjectionException(e);
         }
     }

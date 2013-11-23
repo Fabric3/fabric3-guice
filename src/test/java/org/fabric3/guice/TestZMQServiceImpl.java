@@ -37,24 +37,16 @@
 */
 package org.fabric3.guice;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.matcher.Matchers;
-import org.fabric3.api.node.Domain;
-import org.fabric3.guice.injection.Fabric3TypeListener;
+import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
 
 /**
  *
  */
-public class TestEventModule extends AbstractModule {
-    private Domain domain;
+@ZeroMQ(port = 8181)
+public class TestZMQServiceImpl implements TestZMQService {
 
-    public TestEventModule(Domain domain) {
-        this.domain = domain;
+    public void invoke(String message) {
+        System.out.println("Invoked:" + message);
     }
 
-    protected void configure() {
-        Fabric3TypeListener listener = new Fabric3TypeListener(domain);
-        bindListener(Matchers.any(), listener);
-        bind(TestProducer.class).to(TestProducerImpl.class);
-    }
 }

@@ -35,8 +35,9 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.guice;
+package org.fabric3.guice.injection;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -44,6 +45,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import org.fabric3.api.annotation.Producer;
+import org.fabric3.api.annotation.model.Binding;
 import org.fabric3.api.node.Domain;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -72,6 +74,15 @@ public class Fabric3TypeListener implements TypeListener {
                 Object proxy = domain.getChannel(field.getType(), channelName);
                 Fabric3FieldInjector<T> injector = new Fabric3FieldInjector<T>(field, proxy);
                 encounter.register(injector);
+            } else {
+                for (Annotation annotation : field.getDeclaredAnnotations()) {
+                    if (annotation.annotationType().isAnnotationPresent(Binding.class)) {
+                        // inject binding annotations
+                        Object proxy = domain.getService(field.getType());
+                        Fabric3FieldInjector<T> injector = new Fabric3FieldInjector<T>(field, proxy);
+                        encounter.register(injector);
+                    }
+                }
             }
         }
 
@@ -90,6 +101,16 @@ public class Fabric3TypeListener implements TypeListener {
                 Object proxy = domain.getChannel(method.getParameterTypes()[0], channelName);
                 Fabric3MethodInjector<T> injector = new Fabric3MethodInjector<T>(method, proxy);
                 encounter.register(injector);
+            } else {
+                for (Annotation annotation : method.getDeclaredAnnotations()) {
+                    if (annotation.annotationType().isAnnotationPresent(Binding.class)) {
+                        // inject binding annotations
+                        Object proxy = domain.getService(method.getParameterTypes()[0]);
+                        Fabric3MethodInjector<T> injector = new Fabric3MethodInjector<T>(method, proxy);
+                        encounter.register(injector);
+                    }
+                }
+
             }
         }
 

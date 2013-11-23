@@ -102,8 +102,25 @@
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-node-distribution</artifactId>
             <version>${fabric3.version}</version>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-binding-zeromq-api</artifactId>
+            <version>${fabric3.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>profile-zeromq</artifactId>
+            <version>${fabric3.version}</version>
+            <classifier>bin</classifier>
+            <type>zip</type>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
@@ -121,7 +138,9 @@
             <version>3.1</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
+
     <distributionManagement>
         <repository>
             <id>codehaus.org</id>

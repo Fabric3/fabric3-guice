@@ -37,30 +37,23 @@
 */
 package org.fabric3.guice;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import com.google.inject.MembersInjector;
+import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
 
 /**
- * Injects a proxy on a method.
+ *
  */
-public class Fabric3MethodInjector<T> implements MembersInjector<T> {
-    private Method method;
-    private Object proxy;
+public class TestZeroMQServiceClientImpl implements TestServiceClient {
 
-    public Fabric3MethodInjector(Method method, Object proxy) {
-        this.method = method;
-        this.proxy = proxy;
+    @ZeroMQ(addresses = "localhost:8181")
+    protected TestZMQService service;
+
+    public String invokeField(String message) {
+        service.invoke(message);
+        return message;
     }
 
-    public void injectMembers(Object instance) {
-        try {
-            method.invoke(instance, proxy);
-        } catch (IllegalAccessException e) {
-            throw new InjectionException(e);
-        } catch (InvocationTargetException e) {
-            throw new InjectionException(e);
-        }
+    public String invokeMethod(String message) {
+        throw new UnsupportedOperationException();
     }
+
 }

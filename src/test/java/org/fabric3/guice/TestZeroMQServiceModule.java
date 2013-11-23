@@ -45,16 +45,16 @@ import org.fabric3.guice.injection.Fabric3TypeListener;
 /**
  *
  */
-public class TestEventModule extends AbstractModule {
+public class TestZeroMQServiceModule extends AbstractModule {
     private Domain domain;
 
-    public TestEventModule(Domain domain) {
+    public TestZeroMQServiceModule(Domain domain) {
         this.domain = domain;
     }
 
     protected void configure() {
         Fabric3TypeListener listener = new Fabric3TypeListener(domain);
         bindListener(Matchers.any(), listener);
-        bind(TestProducer.class).to(TestProducerImpl.class);
+        bind(TestServiceClient.class).to(TestZeroMQServiceClientImpl.class);
     }
 }

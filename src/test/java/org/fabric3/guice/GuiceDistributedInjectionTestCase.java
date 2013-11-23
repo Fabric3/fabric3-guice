@@ -37,24 +37,48 @@
 */
 package org.fabric3.guice;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.matcher.Matchers;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import junit.framework.TestCase;
+import org.fabric3.api.node.Bootstrap;
 import org.fabric3.api.node.Domain;
-import org.fabric3.guice.injection.Fabric3TypeListener;
+import org.fabric3.api.node.Fabric;
 
 /**
  *
  */
-public class TestEventModule extends AbstractModule {
-    private Domain domain;
+public class GuiceDistributedInjectionTestCase extends TestCase {
+    private Fabric fabric1;
+    private Fabric fabric2;
 
-    public TestEventModule(Domain domain) {
-        this.domain = domain;
+    public void testZMQDeploy() throws Exception {
+        Domain domain1 = fabric1.getDomain();
+        domain1.deploy("TestZeroMQService", new TestZMQServiceImpl());
+
+        Thread.sleep(1000);
+
+        Domain domain2 = fabric2.getDomain();
+
+        TestZeroMQServiceModule testModule = new TestZeroMQServiceModule(domain2);
+        Injector injector = Guice.createInjector(testModule);
+
+        TestServiceClient client = injector.getInstance(TestServiceClient.class);
+        assertEquals("test", client.invokeField("test"));
+
+        TestZMQService service = domain2.getService(TestZMQService.class);
+        service.invoke("This is a message");
     }
 
-    protected void configure() {
-        Fabric3TypeListener listener = new Fabric3TypeListener(domain);
-        bindListener(Matchers.any(), listener);
-        bind(TestProducer.class).to(TestProducerImpl.class);
+    public void setUp() throws Exception {
+        fabric1 = Bootstrap.initialize(getClass().getResource("systemConfig1.xml")).addProfile("zeromq");
+        fabric1.start();
+
+        fabric2 = Bootstrap.initialize(getClass().getResource("systemConfig2.xml")).addProfile("zeromq");
+        fabric2.start();
+        Thread.sleep(1000);
+    }
+
+    public void tearDown() throws Exception {
+        fabric1.stop();
     }
 }

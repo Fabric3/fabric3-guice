@@ -37,24 +37,14 @@
 */
 package org.fabric3.guice;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.matcher.Matchers;
-import org.fabric3.api.node.Domain;
-import org.fabric3.guice.injection.Fabric3TypeListener;
+import org.oasisopen.sca.annotation.OneWay;
 
 /**
  *
  */
-public class TestEventModule extends AbstractModule {
-    private Domain domain;
+public interface TestZMQService {
 
-    public TestEventModule(Domain domain) {
-        this.domain = domain;
-    }
+    @OneWay
+    void invoke(String message);
 
-    protected void configure() {
-        Fabric3TypeListener listener = new Fabric3TypeListener(domain);
-        bindListener(Matchers.any(), listener);
-        bind(TestProducer.class).to(TestProducerImpl.class);
-    }
 }
